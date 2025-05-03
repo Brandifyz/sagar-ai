@@ -293,6 +293,7 @@ export default function Home() {
                       <option>AI Chatbots</option>
                       <option>AI Call Center</option>
                       <option>AI Automation</option>
+                      <option>AI Service</option>
                     </select>
                   </div>
                   <div>
