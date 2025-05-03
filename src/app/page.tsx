@@ -136,7 +136,7 @@ export default function Home() {
                     automation.
                   </p>
                   <button className="!rounded-button bg-black text-white px-8 py-4 text-lg font-medium hover:bg-custom/90">
-                    Start Now
+                    Start Journey
                   </button>
                 </div>
 
