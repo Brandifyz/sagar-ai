@@ -1,40 +1,9 @@
-# name: Deploy to VPS
-
-# on:
-#   push:
-#     branches:
-#       - main
-
-# jobs:
-#   deploy:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v3
-
-#       - name: Set up SSH
-#         run: |
-#           mkdir -p ~/.ssh
-#           echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/sagar_rsa
-#           chmod 600 ~/.ssh/sagar_rsa
-#           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
-
-#       - name: Deploy via SSH
-#         run: |
-#           ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
-#             cd /var/www/sagar-ai/
-#             git pull origin main
-#             npm install
-#             npm run build
-#             pm2 restart sagar-ai
-#           EOF
-
 name: Deploy to VPS
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -49,22 +18,11 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/sagar_rsa
           chmod 600 ~/.ssh/sagar_rsa
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-          # Add the known hosts (using the output from your ssh-keyscan)
-          echo "194.164.148.99 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBELU6ZMi2iVWL+u3DgvZQB9UibUS+1wHNBrsxmoKhVYud7dJQV9bZGTQUi5pjvHNHm/o6QnhOCTQkSdMvg00xHE=" >> ~/.ssh/known_hosts
-          echo "194.164.148.99 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC8UE0V6sfdhADOuXXXHNCMTttRRbjtbe98ldVO03+QV0/1FEdQBUZCwb9Zm7GeRnSJXcq+bQk6SHYQd8AThOOtgdYU2HfZ+mudeb08FhOuoTJJzaUjHkiWswO95BF3ivs4Pt8RDPqShwIERPwj7jL/ajUu9nCIQjho0HkTcF3CFCCvQGPXA+4lQQzGV6ZdSeXl+6Q3VsMEJPN5dvQBNH3fpipceOYiOb0gLZRDP3WgMVOkb8wdgBm0lNn6DW6T1ZJU4yoX0FDXita9aOy37dLN/dShWcjjZDwbijWDgV9Cq+9gtlGoW/+P3Ok/8i/2JTwscXAkPDYxL89IDoC+DXBlxx9JEWM+4iMxZ543DUs/z+qYL8QpD0wfo7t8EWlOefnlQmIy4hu7Fn0J+YJtSzNxaoNnQaSBMWHASoa3n0W9U5msA8HwTNAziO79RfwkbfKIB2jXyeXZiv4svlhl2UzkGofGDe0UHDpv5A3zQ12R5fqpJ9z4n8yNqTej4RnKXlk=" >> ~/.ssh/known_hosts
-          echo "194.164.148.99 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILw8HzRCga9S/XQoR2zrCMfZWcDmVypgnZlD0nxtSZQp" >> ~/.ssh/known_hosts
-
-          # Start SSH agent and add key
-          eval $(ssh-agent -s)
-          ssh-add ~/.ssh/sagar_rsa
-
-      - name: Test SSH connection
-        run: ssh -i ~/.ssh/sagar_rsa ${{ secrets.VPS_USERNAME }}@194.164.148.99 "echo 'SSH connection successful!'"
-
-      - name: Deploy application
+      - name: Deploy via SSH
         run: |
-          ssh -i ~/.ssh/sagar_rsa ${{ secrets.VPS_USERNAME }}@194.164.148.99 << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} << 'EOF'
             cd /var/www/sagar-ai/
             git pull origin main
             npm install
